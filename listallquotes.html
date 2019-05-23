@@ -1,0 +1,445 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Local Storage All</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/node-uuid/1.4.8/uuid.js"></script>
+</head>
+
+<body>
+
+    <div id="main">
+        <h1>Quotify</h1>
+        <nav>
+            <li><a href="index.html">Random Quote</a></li>
+            <li><a href="localstorage.html">Local Storage Random</a></li>
+            <li><a href="localstorageall.html" style="color:#ffad20;">Local Storage All</a></li>
+            <li><a href="addquote.html">Add Quote</a></li>
+        </nav>
+        <div id="quoteList">
+
+        </div>
+    </div>
+
+    <script>
+
+        const divHandle = document.getElementById('quoteList')
+        let quotes = []
+        if (localStorage.getItem('quotes')) {
+            quotes = JSON.parse(localStorage.getItem('quotes'))
+            quotes.forEach((element, index) => {
+                const blockquote = document.createElement('blockquote')
+                createQuote(element, element.id, blockquote)
+                divHandle.appendChild(blockquote)
+            });
+
+        }
+        else {
+            const blockquote = document.createElement('blockquote')
+            const p = document.createElement('p')
+            const cite = document.createElement('cite')
+
+            p.textContent = "Internal Storage Empty"
+            cite.textContent = "Developer"
+
+            blockquote.appendChild(p)
+            blockquote.appendChild(cite)
+
+            divHandle.appendChild(blockquote)
+        }
+
+        function createQuote(element, uuid, blockquote) {
+            const button = document.createElement('button')
+            const p = document.createElement('p')
+            const cite = document.createElement('cite')
+            const img = document.createElement('img')
+
+
+            button.className = "delete"
+            button.textContent = "X"
+            p.textContent = element.quote
+            cite.textContent = element.cite
+            img.src = "img/edit.png"
+
+            img.addEventListener('click', editQuote)
+            button.addEventListener('click', deleteQuote)
+
+            blockquote.appendChild(button)
+            blockquote.appendChild(p)
+            blockquote.appendChild(cite)
+            blockquote.appendChild(img)
+            blockquote.setAttribute('data-id', uuid)
+
+        }
+
+        function saveQuote(event) {
+            const blockquote = event.target.parentElement
+            const quote = event.target.parentElement.children[0].value
+            const cit = event.target.parentElement.children[1].value
+            const id = blockquote.getAttribute("data-id")
+
+            blockquote.innerHTML = ''
+            createQuote({ quote: quote, cite: cit }, id, blockquote)
+            const index = quotes.findIndex((element) => { return element.id == id })
+            quotes.splice(index, 1, { quote: quote, cite: cit, id: id })
+            localStorage.setItem('quotes', JSON.stringify(quotes))
+        }
+
+        function editQuote(event) {
+            const dataId = event.target.parentElement.getAttribute('data-id')
+            const query = `[data-id='${dataId}']`
+            const blockquote = document.querySelector(query)
+
+            const quote = blockquote.children[1].textContent
+            const cite = blockquote.children[2].textContent
+
+            blockquote.innerHTML = `<textarea class="t-area" rows="12" cols="60">${quote}</textarea>
+                                    <textarea class="t-area" cols="60">${cite}</textarea>`
+
+            const button = document.createElement('button')
+            button.textContent = "save"
+            button.setAttribute('id', 'save')
+            button.addEventListener('click', saveQuote)
+            blockquote.appendChild(button)
+
+        }
+        function deleteQuote(event) {
+
+            if (confirm("Are you sure?")) {
+                const blockquote = event.target.parentElement
+                const id = blockquote.getAttribute('data-id')
+                console.log(id)
+                quotes = quotes.filter((quote) => quote.id != id)
+
+                blockquote.remove()
+                localStorage.setItem('quotes', JSON.stringify(quotes))
+            }
+        }
+    </script>
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <title> Quotify </title>
+        <style>
+             .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            #getlist{
+            margin-top: 40px;
+            padding: 10px;
+            width: 65%;
+            border: 1px solid #840404;
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .tot{
+              color: #840404;
+              font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+       
+    
+
+        <center>
+            <h2> Quotify </h2>
+            <div class="container">
+                    <div class="text-center">
+                        <a href="index.html">Random Quote(API)</a> |
+                        <a href="randomQuoLocal.html">Random Quote(Local)</a> |
+                        <a href="addQuote.html">Add Quote</a> |
+                        <a href="listQuote.html">List All Quotes</a>
+                    </div><br>
+                    
+                    <div class="jumbotron text-center">
+                        <p id="list" class="list-unstyled"><span id="showEdit"></span> <br> <span id="showAuth"></span> <span id="update"></span></p>
+                    </div> 
+        
+                </div>
+                <script>
+                    let quotes
+        
+                    if(localStorage.getItem("quotes")){
+                        quotes = JSON.parse(localStorage.getItem("quotes"))
+                    }else{
+                        localStorage.setItem("quotes", JSON.stringify([]))
+                        quotes = JSON.parse(localStorage.getItem("quotes"))
+                    }
+        
+                    const listHandle = document.getElementById("list")
+                    const showEditHandle = document.getElementById("showEdit")
+                    const showAuthHandle = document.getElementById("showAuth")
+                    const updateHandle = document.getElementById("update")
+        
+                    quotes.forEach(function(ele){
+                        const li = document.createElement("li")
+                        let titles = ele.title
+                        let authors = ele.author
+                        li.textContent = `${titles} ${authors}`
+                        listHandle.appendChild(li)
+        
+                        // creating the delete button
+                        const delBtn = document.createElement("button")
+                        delBtn.innerHTML = "del"
+                        listHandle.appendChild(delBtn)
+        
+                        // creating edit button
+                        const edit = document.createElement("button")
+                        edit.innerHTML = "edit"
+                        listHandle.appendChild(edit)
+                        
+                        // creating br tag
+                        const br = document.createElement("br")
+                        listHandle.appendChild(br)
+        
+        
+                        // delete functionality
+                        delBtn.addEventListener("click", function(){
+                            console.log("delete")
+                            const quote = {} 
+                            quotes.splice(ele,1);
+                            quotes.push(quote)
+                            quotes.pop()
+                            localStorage.setItem("quotes", JSON.stringify(quotes))
+                        })
+        
+                        // edit functionality
+                        edit.addEventListener("click", function(){
+                            // creates the textarea and textbox
+                            const editArea = document.createElement("textarea")
+                            const editAuth = document.createElement("input")
+                            editAuth.setAttribute("type", "text")
+                            editArea.setAttribute("cols", "60")
+                            editArea.setAttribute("rows", "2")
+        
+                            showEditHandle.appendChild(editArea)
+                            showEditHandle.appendChild(editAuth)
+                            editArea.value = ele.title
+                            editAuth.value = ele.author
+        
+                            // create update button inside edit
+                            const updateBtn = document.createElement("button")
+                            updateBtn.innerHTML = "update"
+                            updateHandle.appendChild(updateBtn)
+        
+                            // update functionality
+                            updateBtn.addEventListener("click", function(){
+                                console.log("updated")
+                                const quote = {} 
+                                ele.author = editAuth.value
+                                ele.title = editArea.value
+                                quotes.push(quote) 
+                                quotes.pop()
+                                localStorage.setItem("quotes", JSON.stringify(quotes))
+                            })
+                        })
+                    })
+                </script>
+            </body>
+        </html>
+        
+
+        //mine code
+
+        <!DOCTYPE html>
+<html>
+    <head>
+        <title> Quotify </title>
+        <style>
+             .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            #getlist{
+            margin-top: 40px;
+            padding: 10px;
+            width: 65%;
+            border: 1px solid #840404;
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .tot{
+              color: #840404;
+              font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+       
+    
+
+        <center>
+            <h2> Quotify </h2>
+            <div class="row col-md-12">
+                    <a href="index.html" class="col-md-3 linkQte-1">Random Quote (API)</a> 
+                    <a href="quote-of-local.html" class="col-md-3 linkQte-1">Random Quote (Local)</a> 
+                    <a href="add-quote.html" class="col-md-3 linkQte-1">Add Quotes</a> 
+                    <a href="list-all-quotes.html" class="col-md-3 linkQte">List All Quote(Local)</a>
+                <br/>
+                </div>
+            
+            <div id="getlist">
+               
+            </div>
+            <br/>
+           
+            </center>
+            <script>
+                quotes = JSON.parse(localStorage.getItem('quotes'))
+                console.log(quotes)
+                 // const listHandle = document.getElementById('listing')
+                const getlistHandle = document.getElementById('getlist')
+                
+           
+                //   quotes.forEach(function(quote){
+                // // const li = document.createElement('li')
+                // // li.textContent = player
+                // // listHandle.appendChild(li)
+
+                // //const li = `<li style="text-align:left"><h2>${quote.quote} ${quote.author} <button id="deleteBtn">delete</button></li>`
+                //     const li = `<li style="text-align:left"><h2>${quote.quote} '<br/>'${quote.author} </li>`
+                // listHandle.innerHTML += li
+                 //  })
+
+
+                 let button,editButtton
+                quotes.forEach(function(quote){
+                 qte = document.createElement('p')
+                 athr = document.createElement('p')
+
+                  qte.textContent = quote.quote 
+                  athr.textContent = quote.author
+                
+                getlistHandle.appendChild(qte)
+                getlistHandle.appendChild(athr)
+                button = document.createElement("button");
+                button.innerHTML="dele"
+                button.id ="delteBtn"
+                getlistHandle.appendChild(button)
+                //Creating Button
+                // button = document.createElement("button");
+                // button.innerHTML = "Delete";
+                // button.id ="delteBtn"
+                // editButtton = document.createElement("button");
+                // editButtton.innerHTML = "Edit";
+                // editButtton.id ="editBtn"
+
+
+                // 2. Append somewhere
+                
+                // getlistHandle.appendChild(button)
+                // getlistHandle.appendChild(editButtton)
+
+               }) 
+                const deleteHandle = document.getElementById('delteBtn')
+                console.log(qte.innerHTML)
+                deleteHandle.addEventListener("click", function() {
+  alert("did something");
+    let qteDelete  = qte.innerText
+    let authorDelete = athr.innerText
+    let delQuote = {
+        quote : qteDelete,
+        author: authorDelete
+    }
+    let quoteIndex= quotes.indexOf(delQuote)
+    quotes.splice(quoteIndex, 1)
+    localStorage.setItem('quotes',JSON.stringify(quotes))
+    alert("successfully deleted")
+    location.reload()
+});
+
+               
+          
+
+            </script>
+    </body>
+    </html> -->

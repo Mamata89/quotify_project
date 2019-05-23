@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Quotify </title>
+        <style>
+           
+            .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            .main-div{
+            margin-top: 40px;
+            padding: 10px;
+            width: 50%;
+            
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .tot{
+              color: #840404;
+              font-weight: bold;
+            }
+            #qute{
+            border: 1px solid #840404;
+            padding-bottom: 10px;
+            width: 404px;
+            margin:5px 0 10px 0;
+            }
+            #author{
+            border: 1px solid #840404;
+            width: 400px;
+            height: 150px;
+           
+            }
+        </style>
+    </head>
+    <body>
+       
+    
+
+        <center>
+            <h2> Quotify </h2>
+            <div class="row col-md-12">
+                    <a href="index.html" class="col-md-3 linkQte-1">Random Quote (API)</a> 
+                    <a href="quote-of-local.html" class="col-md-3 linkQte-1">Random Quote (Local)</a> 
+                    <a href="add-quote.html" class="col-md-3 linkQte">Add Quotes</a> 
+                    <a href="list-all-quotes.html" class="col-md-3 linkQte-1">List All Quote(Local)</a>
+                <br/>
+                </div>
+                <div style="width:25%"></div>
+                
+                <div class="main-div">
+                <form>
+                <!-- <input type="text" id="author"/><br/><br/> -->
+               
+                        <textarea id="author"></textarea><br>
+                        <input type="text" id="qute"/><br/>
+                        <input type="submit" class="qteBtn" id="saveBtn" value ="Save" style="width:50%;"/>
+                      
+               
+               
+              
+            </form>
+        </div>
+            <div style="width:25%"></div>
+            <br>
+            
+                
+        </center>
+        <script>
+        const saveBtnHandle = document.getElementById('saveBtn')
+        const quotesHandle = document.getElementById('qute')
+        const autohorHandle = document.getElementById('author')
+        
+        
+        const quote = {}
+        quotes = JSON.parse(localStorage.getItem('quotes'))
+        console.log(quotes.length)
+        saveBtnHandle.addEventListener('click', function(e){
+        e.preventDefault()
+        console.log(quotesHandle.value)
+        console.log(autohorHandle.value)
+        if(quotesHandle.value != '' && autohorHandle.value != ''){
+                quote.quote = quotesHandle.value
+                quote.author = autohorHandle.value
+                quotes.push(quote)
+                localStorage.setItem('quotes', JSON.stringify(quotes))
+                alert("quote has been added successfully")
+                location.reload()
+        }else{
+                alert("quote and author cannot be blank")
+        }
+        location.href = "list-all-quotes.html"
+        })
+
+
+
+
+        </script>
+
+        </body>
+        </html>
+        

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+     <title>Qouote of Local</title>
+     <style>
+       
+            .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            .main-div{
+            margin-top: 40px;
+            padding: 10px;
+            width: 50%;
+            border: 1px solid #840404;
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .tot{
+              color: #840404;
+              font-weight: bold;
+            }
+     </style>
+    </head>
+    <body>
+    <center>
+          <h2> Quote o f Local </h2>
+          <div class="row col-md-12">
+              <a href="index.html" class="col-md-3 linkQte-1">Random Quote (API)</a> 
+              <a href="quote-of-local.html" class="col-md-3 linkQte">Random Quote (Local)</a> 
+              <a href="add-quote.html" class="col-md-3 linkQte-1">Add Quotes</a> 
+              <a href="list-all-quotes.html" class="col-md-3 linkQte-1">List All Quote(Local)</a>
+          <br/>
+          </div>
+        
+           
+          
+              <div style="width:25%"></div>
+              <div class="main-div">
+                  <p id="text"></p>
+                  <h3 id="author"></h3>
+                    
+              </div>
+              <div style="width:25%"></div>
+        
+          <br/>
+           <p id="total" class="tot"></p>
+        
+         <button class="qteBtn" id="getBtn"> Get Another Quote</button>
+
+         
+    </center>
+        
+        
+        <script>
+        const getBtnHandle = document.getElementById('getBtn')
+        const quotesHandle = document.getElementById('text')
+        const autohorHandle = document.getElementById('author')
+        const totalHandle = document.getElementById('total')
+        quotes = JSON.parse(localStorage.getItem('quotes'))
+  console.log(quotes.length)
+
+  function generateQuote(){
+  if(quotes.length == 1){
+    quotesHandle.innerHTML = quotes[0].quote
+    autohorHandle.innerHTML = quotes[0].author
+
+  }else if(quotes.length > 1){
+           const num = Math.round(Math.random() * (quotes.length - 1))
+      console.log(num.length)
+      quotesHandle.innerHTML = quotes[num].quote
+    autohorHandle.innerHTML = quotes[num].author
+    totalHandle.innerHTML = (`This is ${num + 1} the quote from ${quotes.length} quotes stored in local`)
+  }else{
+     // console.log("Local Storage is empty")
+      quotesHandle.innerHTML = "Local Storage is empty"
+  }
+  
+  }
+
+  generateQuote()
+
+        getBtnHandle.addEventListener('click', function(e){
+          e.preventDefault()
+          console.log('button clicked')
+            generateQuote()
+        })
+
+
+          
+        </script>
+    </body>
+</html>
+
+    
+      
+ 

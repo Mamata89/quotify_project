@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Quotify </title>
+        <style>
+            .btn, btn:focus{
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            .main-div{
+            margin-top: 40px;
+            padding: 10px;
+            width: 50%;
+            border: 1px solid #840404;
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+        </style>
+    </head>
+    <body>
+       
+    
+
+        <center>
+
+            <h2> Quotify </h2>
+            <div class="row col-md-12">
+                <a href="index.html" class="col-md-3 linkQte">Random Quote (API)</a> 
+                <a href="quote-of-local.html" class="col-md-3 linkQte-1">Random Quote (Local)</a> 
+                <a href="add-quote.html" class="col-md-3 linkQte-1">Add Quotes</a> 
+                <a href="list-all-quotes.html" class="col-md-3 linkQte-1">List All Quote(Local)</a>
+            <br/>
+            </div>
+            <br/>
+                <!-- <div style="border:1px solid black;margin:4%;padding:5px">
+                    <p id="text"></p>
+                    <h2 id="author"></h2>
+                </div> -->
+               
+                <div style="width:25%"></div>
+                <div class="main-div">
+                    <p id="text"></p>
+                    <h3 id="author"></h3>
+                      
+                </div>
+                <div style="width:25%"></div>
+          
+            <br/>
+             <button class="qteBtn" id="getBtn"> Get the Quotes</button>
+    
+             <button class="btn" id="saveBtn">Save To Local</button>
+        </center>
+            <!-- <div style = "border : 1px solid black;margin : 4%;padding :5px"><center><p id =text ></p>
+            
+            </center></br>
+            <center><p id = author>-</p></center></div>
+
+            <button id = "savebtn" style ="float : right"> Save to Local </button></br>
+
+        <center><button id = 'btn'> Get Another Quote </button></center> -->
+
+            <script>
+                //check if the local storage setup is done or not
+            if(localStorage.getItem('quotes')) {
+                //if key is present , then read the values and put he info
+                //into the variable
+                quotesArr = JSON.parse(localStorage.getItem('quotes'))
+                console.log(quotesArr.length)
+            }else {
+                localStorage.setItem('quotes',JSON.stringify([]))
+                quotesArr = JSON.parse(localStorage.getItem('quotes'))
+                console.log(quotesArr.length)
+            }
+
+                const textHandler = document.getElementById('text')
+                const btnHandler = document.getElementById('getBtn')
+                const authorHandler = document.getElementById('author')
+                const savebtnHandler = document.getElementById('saveBtn')
+
+                const xhr = new XMLHttpRequest()
+
+                apiRequest()
+
+                function apiRequest() {
+                    console.log('im getting quote')
+                xhr.open('GET','http://quotes.stormconsultancy.co.uk/random.json')
+                xhr.send()
+                xhr.onload = function() {
+                console.log(xhr.requestText)
+                //console.log(typeof xhr.requestText)
+
+                // JSON (string) - to - object while fetching data from the server
+                const quote = JSON.parse(xhr.responseText)
+                console.log(quote)
+                //console.log(typeof users)
+                 qte = {
+                    quote : quote.quote ,
+                    author : quote.author
+                }
+                 textHandler.innerHTML = quote.quote
+                 authorHandler.innerHTML = quote.author
+                 
+                }
+                }
+
+                btnHandler.addEventListener('click', function() {
+                    console.log('getanotherquote')
+                    savebtnHandler.disabled = false
+                    savebtnHandler.innerHTML = 'Save to Local'     
+                    apiRequest()
+                })
+
+                savebtnHandler.addEventListener('click', function() {
+                    console.log('hello im here')
+                    savebtnHandler.disabled = true 
+                    savebtnHandler.innerHTML = 'Saved'
+                    quotesArr.push(qte)
+                   localStorage.setItem('quotes',JSON.stringify(quotesArr))
+                   
+                  
+                })
+        
+            </script>
+     
+    </body>
+    
+</html>

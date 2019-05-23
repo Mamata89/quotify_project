@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Quotify </title>
+        <style>
+             .linkQte{
+                border: 1px solid #000;
+                text-decoration: none;
+                padding: 10px;
+                color: #fff;
+                background: #840404;
+            }
+            .linkQte-1{
+              text-decoration: none;
+              padding: 10px;
+              color: #000;
+              background: #fff;
+              border: 1px solid;
+
+            }
+            #getlist{
+            margin-top: 40px;
+            padding: 10px;
+            width: 65%;
+            border: 1px solid #840404;
+            min-height: 100px;
+            }
+            h3{
+                color: #840404;
+            }
+            .qteBtn{
+                background: #4682B4;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            .tot{
+              color: #840404;
+              font-weight: bold;
+            }
+            .quote-text{
+                border: 1px solid #840404;
+                width: 400px;
+                height: 150px;
+                display: block;
+           
+            }
+            .quote-author
+            {
+                border: 1px solid #840404;
+                padding-bottom: 10px;
+                width: 404px;
+                margin:5px 0 10px 0;
+            }
+            .edit-btn
+            {
+                background: #4682B4;
+                color: #fff;
+                border-radius: 4px;
+                padding: 10px;
+                border: 1px solid #eee;
+                width: 11%;
+            }
+            .del-btn
+            {
+                background: #840404;
+                color: #fff;
+                border-radius: 4px;
+                padding: 10px;
+                border: 1px solid #eee;
+                width: 11%;
+
+            }
+            .main-div
+            {
+           
+            margin-top: 40px;
+            padding: 10px;
+            width: 50%;
+           
+            min-height: 100px;
+           
+            }
+           
+        </style>
+    </head>
+    <body>
+       
+    
+
+        <center>
+            <h2> Quotify </h2>
+            <div class="row col-md-12">
+                    <a href="index.html" class="col-md-3 linkQte-1">Random Quote (API)</a> 
+                    <a href="quote-of-local.html" class="col-md-3 linkQte-1">Random Quote (Local)</a> 
+                    <a href="add-quote.html" class="col-md-3 linkQte-1">Add Quotes</a> 
+                    <a href="list-all-quotes.html" class="col-md-3 linkQte">List All Quote(Local)</a>
+                <br/>
+                </div>
+            
+        
+            <p id="list" class="main-div" style="width:75%"><br><span id="showEdit"></span> <br> <span id="showAuth"></span> <span id="update"></span></p>
+            <br/>
+           
+            </center>
+            <script>
+                let quotes
+        
+                if(localStorage.getItem("quotes")){
+                    quotes = JSON.parse(localStorage.getItem("quotes"))
+                }else{
+                    localStorage.setItem("quotes", JSON.stringify([]))
+                    quotes = JSON.parse(localStorage.getItem("quotes"))
+                }
+
+                const getlistHandle = document.getElementById("list")
+                const showEditHandle = document.getElementById("showEdit")
+                const showAuthHandle = document.getElementById("showAuth")
+                const updateHandle = document.getElementById("update")
+                const authorHandle = document.getElementById('author')
+
+                
+
+                    quotes.forEach(function(ele){
+                    qte = document.createElement('p')
+                    athr = document.createElement('h3')
+
+                    qte.textContent = ele.quote 
+                    athr.textContent = ele.author
+                
+                    getlistHandle.appendChild(qte)
+                    getlistHandle.appendChild(athr)
+
+
+                    // creating the delete button
+                    const delBtn = document.createElement("button")
+                    delBtn.innerHTML = "Delete"
+                    delBtn.className = 'del-btn'
+                    getlistHandle.appendChild(delBtn)
+
+                    // creating edit button
+                    const editBtn = document.createElement("button")
+                    editBtn.innerHTML = "Update"
+                    editBtn.className = "edit-btn"
+                    getlistHandle.appendChild(editBtn)
+
+                    // delete functionality
+                    delBtn.addEventListener("click", function(){
+                            console.log("delete")
+                            if (confirm("Are you sure?"))    {
+                            const quote = {} 
+                            var index = quotes.indexOf(ele);
+                            quotes.splice(index,1)
+                            console.log(index)
+                            quotes.push(quote)
+                            quotes.pop()
+                            localStorage.setItem("quotes", JSON.stringify(quotes))
+                            location.reload()
+                            }
+
+                    })
+
+                        // edit functionality
+                        editBtn.addEventListener("click", function(){
+                            // creates the textarea and textbox
+                            const editQuote = document.createElement("textarea")
+                            editQuote.className = 'quote-text'
+
+                            // creating br tag
+                            const br = document.createElement("br")
+                            getlistHandle.appendChild(br)
+
+
+                            const editAuthor = document.createElement("input")
+                            editAuthor.className = 'quote-author'
+
+                           
+        
+                            showEditHandle.appendChild(editQuote)
+                            showEditHandle.appendChild(editAuthor)
+                            editQuote.value = ele.quote
+
+                            editAuthor.value = ele.author
+        
+                            // create update button inside edit
+                            const updateBtn = document.createElement("button")
+                            updateBtn.innerHTML = "update"
+                            updateBtn.className = 'edit-btn'
+                            editAuthor.className = 'quote-author'
+
+                            updateHandle.appendChild(updateBtn)
+        
+                            // update functionality
+                            updateBtn.addEventListener("click", function(){
+                               // console.log("updated")
+                               alert("updated successfully")
+                                const quote = {} 
+                                ele.author = editAuthor.value
+                                ele.quote = editQuote.value
+                                quotes.push(quote) 
+                                quotes.pop()
+                                localStorage.setItem("quotes", JSON.stringify(quotes))
+                                location.reload()
+
+                                
+                            })
+                        })
+
+                })
+
+               
+ 
+
+            </script>
+    </body>
+    </html>
